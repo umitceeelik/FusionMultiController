@@ -21,21 +21,27 @@ namespace FusionMultiController
             {
                 // Create a unique position for the player
                 Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
+
+                //Spawn work as an Instantiate function to create player
                 NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
-                // Keep track of the player avatars so we can remove it when they disconnect
+
+
+                // Keep track of the player avatars so we can remove it when they disconnect && Adding Active player to dictionary
                 _spawnedCharacters.Add(player, networkPlayerObject);
             }
         }
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
-
             // Find and remove the players avatar
             if (_spawnedCharacters.TryGetValue(player, out NetworkObject networkObject))
             {
+                //Destroys a netwok object
                 runner.Despawn(networkObject);
                 _spawnedCharacters.Remove(player);
             }
         }
+
+        // Getting Inputs and updating Network Input Data
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
             var data = new NetworkInputData();
@@ -54,7 +60,6 @@ namespace FusionMultiController
 
             if (Input.GetKey(KeyCode.Space))
                 data.isJumping = true;
-
 
             if (Input.GetKey(KeyCode.F1))
             {
@@ -100,6 +105,7 @@ namespace FusionMultiController
             Instance = this;
         }
 
+        // To Create Host and Join button when game start
         private void OnGUI()
         {
             if (_runner == null)
