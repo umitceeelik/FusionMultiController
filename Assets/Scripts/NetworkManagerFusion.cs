@@ -22,7 +22,7 @@ namespace FusionMultiController
                 // Create a unique position for the player
                 Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
 
-                //Spawn work as an Instantiate function to create player
+                //Spawn works as an Instantiate function to create player
                 NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
 
 
@@ -47,16 +47,28 @@ namespace FusionMultiController
             var data = new NetworkInputData();
 
             if (Input.GetKey(KeyCode.W))
+            {
                 data.direction += Vector3.forward;
+                data.isWalking = true;
+            }
 
             if (Input.GetKey(KeyCode.S))
+            {
                 data.direction += Vector3.back;
+                data.isWalking = true;
+            }
 
             if (Input.GetKey(KeyCode.A))
+            {
                 data.direction += Vector3.left;
+                data.isWalking = true;
+            }
 
             if (Input.GetKey(KeyCode.D))
+            {
                 data.direction += Vector3.right;
+                data.isWalking = true;
+            }
 
             if (Input.GetKey(KeyCode.Space))
                 data.isJumping = true;
@@ -136,6 +148,5 @@ namespace FusionMultiController
                 SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
             });
         }
-
     }
 }

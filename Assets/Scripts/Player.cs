@@ -22,6 +22,7 @@ namespace FusionMultiController
             _cc = GetComponent<NetworkCharacterControllerPrototype>();
         }
 
+        // Aplly movements to network players
         public override void FixedUpdateNetwork()
         {
             if (GetInput(out NetworkInputData data))
@@ -36,26 +37,32 @@ namespace FusionMultiController
 
                 characterAnimator.SetFloat("MovementSpeed", walkSpeed);
 
+                //To jumping
                 if (data.isJumping && _cc.IsGrounded)
                 {
-                    Debug.Log("girdi");
+                    //Debug.Log("girdi");
                     _cc.Jump();
                     characterAnimator.SetBool("Jump", true);
                 }
 
-                if (!data.isJumping && _cc.IsGrounded && data.isDancing)
+                //To dancing
+                if (!data.isJumping && _cc.IsGrounded && data.isDancing /*&& walkSpeed <= 0.01f*/)
                 {
                     OnDanceAnimationTriggered(data.danceAnimIndex);
                 }
+
+
+                // When player trying to move while dancing, finish the dancing anim 
+                if (data.isWalking)
+                {
+                    FinishDanceAnim();
+                }
+
             }
         }
 
+        // To activate dancing 
         public void OnDanceAnimationTriggered(int index)
-        {
-            characterAnimator.SetBool("danceAnim", true);
-            characterAnimator.SetInteger("danceAnimIndex", index);
-        }
-        public virtual void OnDancenimationTriggered(int index)
         {
             characterAnimator.SetBool("danceAnim", true);
             characterAnimator.SetInteger("danceAnimIndex", index);
@@ -71,6 +78,11 @@ namespace FusionMultiController
         public void FinishDanceAnim()
         {
             characterAnimator.SetBool("danceAnim", false);
+        }
+
+        public void FinishWalkingAnim()
+        {
+            characterAnimator.SetFloat("MovementSpeed", 0);
         }
     }
 }
